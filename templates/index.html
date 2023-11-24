@@ -171,7 +171,7 @@ border-radius:15px;
 
 
 
-<div id="loading" class="text-center mt-2" style="display: none;">
+ <!-- <div id="loading" class="text-center mt-2" style="display: none;">
  
     <svg class="animate-spin h-16 w-16 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -180,9 +180,17 @@ border-radius:15px;
         </path>
     </svg>
     <p class="font-bold tracking-wide mt-2">Loading</p>
-    <!-- You can use a loading spinner here if you have one -->
-</div>
+    You can use a loading spinner here if you have one 
+</div>-->
 
+
+<div id="loading" class="text-center mt-2" style="display: none;">
+    <div class="relative flex justify-center items-center">
+        <div class="absolute animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-purple-500"></div>
+        <img src="https://www.svgrepo.com/show/509001/avatar-thinking-9.svg"  class="rounded-full h-28 w-28">
+    </div>
+    <p class="font-bold tracking-wide mt-2">Loading</p>
+</div>
 
     {% if error %}
         <p>{{ error }}</p>
