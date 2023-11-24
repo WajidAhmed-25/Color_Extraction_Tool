@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Color Extractor</title>
+
+
+    <style>
+      
+    
+        .my_colorinput {
+            padding-top:10px;
+            font-weight:bold;
+    
+        }
+    .my_heading{
+        color:black;
+        background: linear-gradient(to right, #67b26f, #4ca2cd); 
+        width:45%;
+        border-radius:20px;
+        border:4px solid #1a1c1b;
+        margin-left:auto;
+        margin-right:auto;
+        padding:10px;
+        margin-top:5px;
+    }
+
+    .target_color_input{
+        padding:15px;
+border:3px solid #D3D3D3;
+border-radius:15px;
+    }
+
+
+      .replace_color_input{
+       padding:15px;
+        border:3px solid #D3D3D3;
+        width:270px;
+        border-radius:15px;
+      }
+      </style>
+
+
+
+
+
+
+
+
+</head>
+<body class="">
+<script>
+    function displayFileName(input) {
+        var fileName = input.files[0].name;
+        var imgPath = URL.createObjectURL(input.files[0]); // Create a temporary URL for the uploaded image
+        document.getElementById('file-name').innerText = fileName;
+        document.getElementById("image-name").src = imgPath;
+        document.getElementById("image-name").className = "mx-auto";
+    }
+        </script>
+
+        <script>
+            function uploadImage() {
+                // Check if a file is selected
+                var fileInput = document.getElementById('file-input');
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    // Show a message div
+                    var noImageMessage = document.getElementById('no-image-message');
+                    noImageMessage.style.display = 'block';
+        
+                    // Hide the message after 5 seconds
+                    setTimeout(function () {
+                        noImageMessage.style.display = 'none';
+                    }, 1500);
+        
+                    // Do not submit the form
+                    return false;
+                }
+        
+                // Show loading sign
+                document.getElementById('loading').style.display = 'block';
+        
+                // Submit the form
+                document.getElementById('uploadForm').submit();
+            }
+        </script>
+
+
+
+        <script>
+            function imageLoaded() {
+                // This function is called when the image is loaded
+                console.log('Image loaded successfully');
+            }
+        
+            function downloadImage() {
+                // Get the selected format from the dropdown
+                var format = document.getElementById('format').value;
+        
+                // Get the modified image element
+                var img = document.getElementById('modifiedImage');
+        
+                // Check if the image is loaded
+                if (!img.complete || typeof img.naturalWidth === 'undefined' || img.naturalWidth === 0) {
+                    console.error('Error: Image not loaded');
+                    return;
+                }
+        
+                // Create a canvas element
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+        
+                // Set the canvas size to the image size
+                canvas.width = img.width;
+                canvas.height = img.height;
+        
+                // Draw the image onto the canvas
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+                // Convert the canvas content to a data URL with the selected format
+                var dataURL = canvas.toDataURL('image/' + format);
+        
+                // Create a temporary link element
+                var link = document.createElement('a');
+        
+                // Set the download attribute and create the download URL
+                link.download = 'modified_image.' + format;
+                link.href = dataURL;
+        
+                // Simulate a click on the link to trigger the download
+                link.click();
+            }
+        </script>
+
+
+        
+
+<div class="bg-cover bg-no-repeat w-full"
+        style="background-image: url('https://images.unsplash.com/photo-1497506928652-500166625d53?q=80&w=1922&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <h1 class="py-6 font-black text-6xl bg-gray-100 mix-blend-lighten uppercase text-center">
+            Color Extractor
+        </h1>
+    </div>
+
+
+    <div id="no-image-message" class="bg-red-900  text-white p-2 rounded-md mt-2 p-4 font-semibold tracking-wider" style="display: none;">
+        No image selected. Please choose an image before generating colors.
+    </div>
+
+
+    <form action="/upload" method="post" enctype="multipart/form-data" class=" mt-4 flex flex-col border-2 border-black border-opacity-50 rounded-md p-8 w-1/2 ml-auto mr-auto border-dashed">
+{#       <input type="file" name="file" accept="image/*" required class="w-1/2 bg-blue-200">#}
+        <div class="flex flex-row">
+        <label for="file-input" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center w-44 cursor-pointer border-2 border-black border-opacity-50 font-bold">
+              <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+    Choose File
+</label>
+<input type="file" id="file-input" name="file" accept="image/*" required class="hidden " onchange="displayFileName(this)">
+<p id="file-name" class="mt-2 ml-8 font-bold"></p>
+
+        </div>
+        <button type="submit" onClick="uploadImage()" class="text-white w-64 bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-xl px-5 py-4 text-center mt-8 mb-2 mx-auto  border-green-300 border-2">Generate Colors</button>
+    </form>
+<div class="mx-auto  w-80 h-64 ">
+<img id="image-name" src=""  alt="" class="hidden max-w-full max-h-full">
+</div>
+
+
+
+
+<div id="loading" class="text-center mt-2" style="display: none;">
+ 
+    <svg class="animate-spin h-16 w-16 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+        </path>
+    </svg>
+    <p class="font-bold tracking-wide mt-2">Loading</p>
+    <!-- You can use a loading spinner here if you have one -->
+</div>
+
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+
+
+    {% if colors %}
+    <div class="mx-auto  w-80 h-64 -mt-64 ">
+        <img src="{{ image_path }}" alt="Uploaded Image" class="uploaded-image mx-auto max-h-full max-w-full">
+    </div>
+    <div class="bg-cover bg-no-repeat mt-10 w-full" style="background-image: url('https://images.unsplash.com/photo-1497506928652-500166625d53?q=80&w=1922&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <h1 class="py-6 font-black text-4xl bg-gray-100 mix-blend-lighten uppercase text-center">
+            Colors In Image: {{ color_count }}
+        </h1>
+    </div>
+    <div class="color-container ">
+        {% for color in colors %}
+        <div class="color-box" style="background-color: {{ color }}">{{ color }}</div>
+    {% endfor %}
+    </div>
+  
+
+    <form action="/replace_color" method="post" class="flex flex-col space-y-6">
+        <div class="bg-cover bg-no-repeat w-full mt-5 " style="background-image: url('https://images.unsplash.com/photo-1497506928652-500166625d53?q=80&w=1922&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+            <h1 class="py-4 font-black text-2xl bg-gray-100 mix-blend-lighten uppercase text-center">
+                Number of Colors to be changed:
+            </h1>
+        </div>
+     
+    <input type="number" name="num_colors" placeholder="Enter a number" min=1 max={{color_count}} required class="w-1/4 text-center font-semibold p-4 mx-auto border-4 border-[#36454F] border-opacity-75 p-2 rounded-xl mb-4" id="num_colors">
+    
+        <div id="color-inputs">
+            <!-- Color input boxes will be generated dynamically here -->
+        </div>
+    
+        <input type="hidden" name="image_path" value="{{ image_path }}">
+        <button type="submit" class="text-white bg-gradient-to-br from-green-400 mx-auto to-blue-600 text-bold tracking-wider hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 text-lg font-bold rounded-full w-4/12 px-16 py-2 text-center border-4 border-black border-opacity-50">Replace Color(s)</button>
+    </form>
+    
+    <script>
+        // Script to dynamically generate color input boxes based on user input
+        document.getElementById('num_colors').addEventListener('input', function () {
+            var numColors = parseInt(this.value);
+            var colorInputs = document.getElementById('color-inputs');
+    
+            // Clear existing color input boxes and headings
+            colorInputs.innerHTML = '';
+    
+            // Generate new color input boxes and headings
+            for (var i = 1; i <= numColors; i++) {
+                // Create a div for each iteration
+                var iterationDiv = document.createElement('div');
+                iterationDiv.classList.add('my_colorinput');
+               
+             
+    
+                var heading = document.createElement('h3');
+                heading.innerHTML = 'Enter Color ' + i + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + 'Replacement Color ' + i;
+                heading.classList.add('mb-4','font-semibold','text-lg')
+                heading.classList.add('my_heading');
+                iterationDiv.appendChild(heading);
+
+    
+                var targetColorInput = document.createElement('input');
+                targetColorInput.type = 'text';
+                targetColorInput.name = 'target_color_' + i;
+                targetColorInput.placeholder = 'Target Color ' + i + ' (Hex Code)';
+                targetColorInput.required = true;
+                targetColorInput.classList.add('target_color_input','ml-16');
+    
+                var replacementColorInput = document.createElement('input');
+                replacementColorInput.type = 'text';
+                replacementColorInput.name = 'replacement_color_' + i;
+                replacementColorInput.placeholder = 'Replacement Color ' + i + ' (Hex Code)';
+                replacementColorInput.required = true;
+                replacementColorInput.classList.add('replace_color_input','ml-16');
+    
+                // Append the new input boxes to the iteration div
+                iterationDiv.appendChild(targetColorInput);
+                iterationDiv.appendChild(replacementColorInput);
+    
+                // Add a line break after each iteration
+                iterationDiv.appendChild(document.createElement('br'));
+                iterationDiv.appendChild(document.createElement('br'));
+    
+                // Append the iteration div to the form
+                colorInputs.appendChild(iterationDiv);
+            }
+        });
+    </script>
+
+
+
+    
+
+{% endif %}
+
+
+
+{% if modified_image_path %}
+<div class=" -mt-60">
+    <div class="bg-cover bg-no-repeat w-full mt-5 mb-10" style="background-image: url('https://images.unsplash.com/photo-1497506928652-500166625d53?q=80&w=1922&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <h1 class="py-4 font-black text-4xl bg-gray-100 mix-blend-lighten uppercase text-center">
+            Modified Image:
+        </h1>
+    </div>
+    <img id="modifiedImage" src="{{ modified_image_path }}" alt="Modified Image" class="mx-auto  w-80 h-64 -mt-4" onload="imageLoaded()">
+
+    <!-- Download Button Section -->
+    <div class="text-center mt-4 flex flex-col">
+        <div > 
+        <label for="format" class='text-xl font-bold ml-4 mt-6'>Select format:</label>
+        <select id="format" class="border-gray-200 border-4 border-black p-2 ml-4">
+            <option value="png" class="mt-4">PNG</option>
+            <option value="jpeg">JPEG</option>
+        </select>
+    </div>
+        <button onclick="downloadImage()" class="bg-gray-300 mb-2 hover:border-black hover:border-2 mt-8 w-40 mx-auto hover:bg-gray-400  text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center">
+            <span class="tracking-wider">Download</span>
+            <svg class="fill-current w-4 h-4 ml-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+          </button>
+    </div>
+</div>
+{% endif %}
+
+
+</body>
+</html>
